@@ -63,7 +63,6 @@ syntax, acs_raw_file(string) cps_emp_benchmark(real)
   ;
   #delimit cr
   lab val female female
-  drop sex
 
   *race/ethnicity
   gen byte racec = .
@@ -182,6 +181,9 @@ syntax, acs_raw_file(string) cps_emp_benchmark(real)
   label values hourc l_hourc
   lab var hourc "Usual weekly work hours category"
 
+   * part/full-time
+  gen parttime = uhrswork <= 34
+
   *sector
   gen byte sectc=.
   replace sectc = 1 if classwkrd==22
@@ -285,7 +287,7 @@ syntax, acs_raw_file(string) cps_emp_benchmark(real)
   * PW PUMA
   lab var pwpuma "Place of work PUMA"
 
-  keep year pwstate pwpuma puma statefips hrwage0 perwt0 female age agec racec poc teens childc edc faminc povstat hourc indc tipc region worker uhrswork sectc
+  keep year pwstate pwpuma puma statefips hrwage0 perwt0 female sex age agec racec poc teens childc edc faminc ftotinc povstat hourc parttime indc tipc region worker uhrswork sectc
   compress
   save ${input_clean_dir}clean_acs_state_base.dta, replace
 

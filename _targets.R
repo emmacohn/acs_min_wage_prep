@@ -1,11 +1,12 @@
 source("./packages.R")
 lapply(list.files("./R", full.names = TRUE), source)
 
-REF_STATE_BASE <- "~/projects/rtwa_2025_17/inputs_clean/clean_acs_state_base.dta"
+#REF_STATE_BASE <- "~/projects/bzipperer/rtwa_2025_17/inputs_clean/clean_acs_state_base.dta"
+# that's not on spriggs
 
 tar_assign({
   # pipeline parameters
-  acs_ipums_raw = tar_file("inputs_raw/usa_00106.dta.gz")
+  acs_ipums_raw = tar_file("inputs_raw/usa_00058.dta.gz")
   cps_year = 2025 |> tar_target()
 
   # do-files
@@ -63,11 +64,11 @@ tar_assign({
     tar_file()
 
   # Reproducibility check vs. rtwa_2025_17 baseline
-  ref_state_base = tar_file(REF_STATE_BASE)
+  # ref_state_base = tar_file(REF_STATE_BASE)
 
-  repro_report = reproducibility_report(
-    acs_state_base,
-    ref_state_base
-  ) |>
-    tar_target()
-})
+  #repro_report = reproducibility_report(
+  #  acs_state_base,
+  #  ref_state_base
+  # ) |>
+  #  tar_target()
+  })

@@ -260,6 +260,15 @@ syntax, acs_raw_file(string) cps_emp_benchmark(real)
   lab define tipc 0 "Not tipped" 1 "Tipped worker"
   lab val tipc tipc
 
+  *Uprooting South region (no DC, MD, DE)
+  gen byte region = .
+  replace region = 0
+  replace region = 1 if inlist(pwstate,12,13,37,45,51,54,1,21,28,47,5,22,40,48)
+
+  lab var region "South region"
+  lab define region 0 "not South" 1 "South"
+  lab val region region
+
   *Veteran status
   gen byte vetc = .
   replace vetc = 1 if (vetstatd > 10 & vetstatd < 99)
@@ -276,7 +285,7 @@ syntax, acs_raw_file(string) cps_emp_benchmark(real)
   * PW PUMA
   lab var pwpuma "Place of work PUMA"
 
-  keep year pwstate pwpuma puma statefips hrwage0 perwt0 female age agec racec poc teens childc edc faminc povstat hourc indc tipc worker uhrswork sectc
+  keep year pwstate pwpuma puma statefips hrwage0 perwt0 female age agec racec poc teens childc edc faminc povstat hourc indc tipc region worker uhrswork sectc
   compress
   save ${input_clean_dir}clean_acs_state_base.dta, replace
 

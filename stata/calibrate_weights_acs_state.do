@@ -17,11 +17,11 @@ gen byte _one = 1
 tempfile acsmicrodata
 save `acsmicrodata'
 
-use ${output}acs_tables_state.dta, clear
+use ${acs_tables_file}, clear
 levelsof statefips, local(statefipslevels)
 
 foreach i of numlist `statefipslevels' {
-	use if statefips == `i' using ${output}acs_tables_state.dta, clear
+	use if statefips == `i' using ${acs_tables_file}, clear
 
 	* AGE
 	mkmat emp1619 emp2024 emp2534 emp3544 emp4554 emp5564 emp6599, matrix(age)

@@ -7,18 +7,10 @@ local stata_arguments = subinstr("`stata_arguments'", " ", ") ", .)
 
 capture program drop acs_state
 program define acs_state
-syntax, acs_prep_file(string) acs_impute_do_file(string) cps_year(integer) acs_tables_dir(string) acs_tables_do_file(string) calibrate_do_file(string)
+syntax, acs_prep_file(string) acs_impute_do_file(string) cps_year(integer) acs_tables_file(string) calibrate_do_file(string) acs_reg_do_file(string)
 
-* globals used by the substate_geo do-files
-global acsdata `acs_tables_dir'/
-global output ${input_clean_dir}
-
-
-********************************************************************************
-* Process ACS tables
-********************************************************************************
-do `acs_tables_do_file'
-saveold ${output}acs_tables_state.dta, replace version(13)
+* ACS state employment tables (from acs_demo_data()) used to rake weights
+global acs_tables_file `acs_tables_file'
 
 
 ********************************************************************************
@@ -82,14 +74,13 @@ keep if classwkrd >= 22 & classwkrd <= 28
 * drop those working abroad
 drop if pwstate > 56
 
-gen hrwage1 = hrwage0
-
+global cps_year `cps_year'
+do `acs_reg_do_file'
 
 ********************************************************************************
 * Modify imputation based on CPS state wage location
 ********************************************************************************
 * output: variable hrwage2
-global cps_year `cps_year'
 do `acs_impute_do_file'
 
 keep adj_wkswork* age bpl citizen classwkr classwkrd educd empstatd empstat famsize famunit foodstmp ftotinc hasyouth_* hhincome hhwt hispan* hrwage0 hrwage1 hrwage2 incearn inctot incwage ind ind1990 marst metro met2013 nchild nfams occ parent_* pernum perwt0 perwt1 perwt2 poverty puma pwpuma pwstate rac* related serial sex statefips subfam uhrswork vetstatd wkswork2 year

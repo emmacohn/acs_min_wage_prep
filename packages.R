@@ -1,6 +1,7 @@
 library(conflicted)
 library(targets)
 library(tarchetypes)
+library(tidycensus)
 
 conflict_prefer("filter", "dplyr", quiet = TRUE)
 

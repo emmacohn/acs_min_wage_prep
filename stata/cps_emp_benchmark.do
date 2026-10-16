@@ -7,9 +7,9 @@ local stata_arguments = subinstr("`stata_arguments'", " ", ") ", .)
 
 capture program drop cps_emp_benchmark
 program define cps_emp_benchmark
-syntax, cps_year(integer) out_file(string)
+syntax, cps_begin(string) cps_end(string) out_file(string)
 
-  load_epiextracts, begin(`cps_year'm1) end(`cps_year'm12) sample(org) keep(wageotc age cow1 emp orgwgt statefips)
+  load_epiextracts, begin(`cps_begin') end(`cps_end') sample(org) keep(wageotc age cow1 emp orgwgt statefips)
   keep if wageotc > 0 & wageotc != .
   assert age >= 16 & cow1 >= 1 & cow1 <= 5 & emp == 1
 

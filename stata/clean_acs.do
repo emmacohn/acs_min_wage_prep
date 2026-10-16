@@ -7,7 +7,7 @@ local stata_arguments = subinstr("`stata_arguments'", " ", ") ", .)
 
 capture program drop clean_acs_base
 program define clean_acs_base
-syntax, acs_raw_file(string) cps_emp_benchmark(real)
+syntax, acs_raw_file(string) cps_emp_benchmark_file(string)
 
   * clean ACS data
   use `acs_raw_file', clear
@@ -22,9 +22,18 @@ syntax, acs_raw_file(string) cps_emp_benchmark(real)
   rename perwt2 perwt0
   label var perwt0 "Raked person weight at data period"
 
-  sum perwt0
-  local orig_totalemp = `r(sum)'
-  replace perwt0 = perwt0 * `cps_emp_benchmark' / `orig_totalemp'
+  * scale each state's weights to CPS wage-earner employment by state of residence
+  preserve
+  import delimited using "`cps_emp_benchmark_file'", clear
+  tempfile cps_emp_benchmark
+  save `cps_emp_benchmark'
+  restore
+
+  recast double perwt0
+  gegen double acs_stateemp = total(perwt0), by(statefips)
+  merge m:1 statefips using `cps_emp_benchmark', assert(3) nogenerate
+  replace perwt0 = perwt0 * cps_stateemp / acs_stateemp
+  drop acs_stateemp cps_stateemp
 
   replace ftotinc = . if ftotinc>=9999999
   replace ftotinc = 0 if ftotinc<0

@@ -5,8 +5,6 @@
 * 2. To calculate percentiles in CPS, linearly interpolate them
 * 3. To match ACS linearly interpolate quantiles to appropriate CPS percentiles, linearly interpolate between CPS (linearlly interpolated) percentiles
 
-local cps_year ${cps_year}
-
 tempfile allacs
 save `allacs'
 
